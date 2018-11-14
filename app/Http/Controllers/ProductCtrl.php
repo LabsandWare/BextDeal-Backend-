@@ -62,7 +62,6 @@ class ProductCtrl extends Controller
       
 
       //$productid=Product::find('id')->first();
-
       Log::info ('ii'. $productid);
 
       $product_category =$product-> product_cat()->create([

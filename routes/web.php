@@ -15,10 +15,14 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get('login', 'Auth\AuthCtrl@authentication');
-$router->get('logout/{id}', 'Auth\AuthCtrl@logout');
-$router->post('register', 'Auth\UserRegistrationCtrl@register');
+$router->group(['middleware' => ['cors'], 'prefix' => 'api/'], function($router)
+{
 
+    $router->get('login', 'Auth\AuthCtrl@authentication');
+    $router->get('logout/{id}', 'Auth\AuthCtrl@logout');
+    $router->post('register', 'Auth\UserRegistrationCtrl@register');
+
+});
 
 $router->group(['middleware' => ['cors', 'auth'], 'prefix' => 'api/'], function($router)
 {

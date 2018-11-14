@@ -30,10 +30,11 @@ class ProductCategoryCtrl extends Controller
       $product_category = $request->input('product_category');
             
       $product_category = ProductCategory::create([
-          'product_category' => $product_name                   
+          'product_category' => $product_category                   
       ]);
       
       $product_category->save();
+      return $product_category;
                   
   }
 

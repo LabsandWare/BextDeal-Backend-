@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
  
 use App\User;
 use App\Product;
-use App\Product_category;
+use App\ProductCategory;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Filesystem\Filesystem;
 
@@ -12,77 +13,92 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 
 class ProductCtrl extends Controller
 {
+
+  public function index(Request $request)
+  {
+      # code...
+      $product = Product::all();
+
+      return $product;
+  }
+
   /*
   **
-  * Register new user
+  * Register new product
   *
   * @param $request Request
   */
-
-   
-
   public function store(Request $request)
   {
+      $this->validate($request, [
+          'product_name' => 'required',
+          'product_specification' => 'required',
+          'actual_cost_in_currency' => 'required',
+          'product_image' => 'required',
+          'product_category' => 'required'    
+      ]);
+    
+      $product_name = $request->input('product_name');
+      $product_specification = $request->input('product_specification');
+      $actual_cost_in_currency = $request->input('actual_cost_in_currency');
+      $product_image = $request->input('product_image');
+      $product_category = $request->input('product_category');     
+        
+      $product_category_id = ProductCategory::where('product_category', $product_category)->value('id');
+     
+      $product = Product::create([
+          'product_name' => $product_name,
+          'product_specification' => $product_specification,
+          'actual_cost_in_currency' => $actual_cost_in_currency,
+          'product_image' => $product_image, 
+          'product_category_id' => $product_category_id,                     
+      ]);
+
+      $product->save();
+
+      $res['data'] =$product;
+
+      return response($res);
+                  
+  }
+  
+  public function show($id)
+  {
+    # code...
+    $product = Product::findOrFail($id);
+
+    return $product;
+  }
+
+  public function update(Request $request, $id)
+  {
+      # code...
       $this->validate($request, [
 
           'product_name' => 'required',
           'product_specification' => 'required',
-          'product_price' => 'required',
-          'quantity' => 'required',
-          'product_category_name' => 'required',
-          'product_category_description' => 'required',
-          'product_image' => 'required',
-          
-      ]);
-    
-      $product_name = $request->input('product_name');
-      $product_color = $request->input('product_color');
-      $product_price = $request->input('product_price');
-      $quantity = $request->input('quantity');
-      $product_description = $request->input('product_description');
-      $other_product_details = $request->input('other_product_details');
-      $product_category_level = $request->input('product_category_level');
-      $product_category_name = $request->input('product_category_name');
-      $product_category_description = $request->input('product_category_description');
-      $product_type_code = $request->input('product_type_code');
-      $image = $request->input('product_image');
-      
-      log::info('All Input ' . $request->all());
-      
-      $product = Product::create([
-          'product_name' => $product_name,
-          'product_color' => $product_color,
-          'actual_cost_in_currency' => $product_price,
-          'product_specification' => $product_description,                      
+          'actual_cost_in_currency ' => 'required',
+          'product_image' => 'required',             
       ]);
 
-      $product->save();
-      $productid=$product->id;
+      $product = Products::findOrFail($id);
 
-      
+      if ($product->fill($request->all())->save()) {
+            # code...
+            return response()->json(['success' => true]);
+      }
 
-      //$productid=Product::find('id')->first();
-      Log::info ('ii'. $productid);
-
-      $product_category =$product-> product_cat()->create([
-          'product_category_level' => $product_category_level,
-          'product_category_name' => $product_category_name,
-          'product_category_description' => $product_category_description,
-          'product_id' =>  $productid,
-      ]);
-      $product_category->save();
-
-      $res['success'] = true;
-      $res['message'] = 'Success register!';
-      $res['data'] =$product_category;
-      return response($res);
-                  
+      return response()->json(['status' => 'failed']);
   }
 
-  public function trial(Request $request)
+
+  public function destroy($id)
   {
       # code...
-      log::info (' is me trial '); 
+      $product = Product::findOrFail($id);
+      $product->delete();
+
+      return response()->json(['success' => true]);
   }
         
 }

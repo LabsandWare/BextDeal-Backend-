@@ -27,10 +27,23 @@ $router->group(['middleware' => ['cors'], 'prefix' => 'api/'], function($router)
 $router->group(['middleware' => ['cors', 'auth'], 'prefix' => 'api/'], function($router)
 {
     $router->post('createuser', 'UserController@get_user');
+
     $router->get('product_category', 'ProductCategoryCtrl@index');
     $router->post('product_category', ['middleware' => 'role:super-admin', 'uses' =>'ProductCategoryCtrl@store']);
-    // $router->post('product_category', 'ProductCategoryCtrl@store');
-    $router->put('product_category', ['middleware' => 'can:create-product-category', 'uses' =>'ProductCategoryCtrl@store']);
-    $router->put('todo/{id}', 'TodoController@update');
-    $router->delete('todo/{id}', 'TodoController@destroy');
+    $router->get('product_category/{id}', ['middleware' => 'role:super-admin', 'uses' =>'ProductCategoryCtrl@show']);
+    $router->put('product_category/{id}', ['middleware' => 'role:super-admin', 'uses' =>'ProductCategoryCtrl@update']);
+    $router->delete('product_category/{id}', ['middleware' => 'role:super-admin', 'uses' =>'ProductCategoryCtrl@destroy']);
+
+    $router->get('product', 'ProductCtrl@index');
+    $router->post('product', ['middleware' => 'role:super-admin', 'uses' =>'ProductCtrl@store']);
+    $router->get('product_category/{id}', ['middleware' => 'role:super-admin', 'uses' =>'ProductCtrl@show']);
+    $router->put('product/{id}', ['middleware' => 'role:super-admin', 'uses' =>'ProductCtrl@update']);
+    $router->delete('product/{id}', ['middleware' => 'role:super-admin', 'uses' =>'ProductCtrl@destroy']);
+
+    $router->get('bid_order', 'BidOrderCtrl@index');
+    $router->post('bid_order', ['middleware' => 'role:super-admin', 'uses' =>'BidOrderCtrl@store']);
+    $router->get('bid_order/{id}', ['middleware' => 'role:super-admin', 'uses' =>'BidOrderCtrl@show']);
+    $router->put('bid_order/{id}', ['middleware' => 'role:super-admin', 'uses' =>'BidOrderCtrl@update']);
+    $router->delete('bid_order/{id}', ['middleware' => 'role:super-admin', 'uses' =>'BidOrderCtrl@destroy']);
+
 });

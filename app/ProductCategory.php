@@ -23,5 +23,13 @@ class ProductCategory extends Model
     {
         return $this->belongsTo('App\User', 'foreign_key');
     }
+
+    /**
+     * Get the user that owns the ProductCategory.
+     */
+    public function product()
+    {
+        return $this->hasOne('App\Product');
+    }
    
 }

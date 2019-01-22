@@ -19,11 +19,16 @@ class BidOrder extends Model
     ];
 
     /**
-     * Get the user that owns the product.
+     * Get the product record associated with the bidorder.
      */
     public function product()
     {
-        return $this->belongsTo('App\Product', 'foreign_key');
+        return $this->belongsTo('App\Product', 'product_id');
+    }
+
+    public function bidderbidregistration()
+    {
+        return $this->hasOne('App\BidderBidRegistration');
     }
    
 }

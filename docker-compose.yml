@@ -1,0 +1,33 @@
+version: '2'
+services: 
+  app: 
+    build: 
+      context: .
+      dockerfile: .docker/Dockerfile
+
+    image: bextdeal
+
+    ports: 
+      - 8080:80
+    volumes:
+      - .:/srv/app
+
+    links:
+      - mysql
+    
+    environment:
+      DB_HOST: mysql
+      DB_DATABASE: bextdeal
+      DB_USERNAME: app
+      DB_PASSWORD: passw0rd
+
+  mysql:
+    image: mysql:5.7
+    ports: 
+      - 13306:3306
+    
+    environment:
+      MYSQL_DATABASE: bextdeal
+      MYSQL_USER: app
+      MYSQL_PASSWORD: passw0rd
+      MYSQL_ROOT_PASSWORD: t0m1x

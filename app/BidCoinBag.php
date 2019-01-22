@@ -16,5 +16,11 @@ class BidCoinBag extends Model
         'bag_name', 'bid_coins', 
         'bonus_coins',  'cost_in_currency'
     ];
+
+    
+    public function bidcointransactionlog()
+    {
+        return $this->hasOne('App\BidCoinTransactionLog');
+    }
    
 }

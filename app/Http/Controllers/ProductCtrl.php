@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
- 
+
+use Log;
 use App\User;
 use App\Product;
 use App\ProductCategory;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Filesystem\Filesystem;
 
 
@@ -17,9 +19,9 @@ class ProductCtrl extends Controller
   public function index(Request $request)
   {
       # code...
-      $product = Product::all();
+      $products = Product::has('productcategory')->with('productcategory')->get();
 
-      return $product;
+      return   $products;
   }
 
   /*
@@ -29,7 +31,9 @@ class ProductCtrl extends Controller
   * @param $request Request
   */
   public function store(Request $request)
-  {
+  {    
+      Log::info("I got called");
+
       $this->validate($request, [
           'product_name' => 'required',
           'product_specification' => 'required',
@@ -41,22 +45,26 @@ class ProductCtrl extends Controller
       $product_name = $request->input('product_name');
       $product_specification = $request->input('product_specification');
       $actual_cost_in_currency = $request->input('actual_cost_in_currency');
-      $product_image = $request->input('product_image');
-      $product_category = $request->input('product_category');     
+      $product_image = $request->file(`file`);
+      $product_category = $request->input('product_category');  
+
+      Storage::put($product_image->getClientOriginalName(), File::get($product_image));
+      
+      
         
-      $product_category_id = ProductCategory::where('product_category', $product_category)->value('id');
+      $productcategory_id = ProductCategory::where('product_category', $product_category)->value('id');
      
       $product = Product::create([
           'product_name' => $product_name,
           'product_specification' => $product_specification,
           'actual_cost_in_currency' => $actual_cost_in_currency,
           'product_image' => $product_image, 
-          'product_category_id' => $product_category_id,                     
+          'productcategory_id' => $productcategory_id,                     
       ]);
 
       $product->save();
 
-      $res['data'] =$product;
+      $res['data'] = $product;
 
       return response($res);
                   

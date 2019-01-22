@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Auth;
 use App\User;
 use App\Bidder;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class AuthCtrl extends Controller 
-{
+{ 
 
     public function authentication(Request $request){
        
@@ -23,19 +24,30 @@ class AuthCtrl extends Controller
       $apikey = base64_encode(str_random(30));
       $hasher = app()->make('hash');
       $user = User::where('email', $request->input('email'))->first();
-      
+           
       
       if(count($user) > 0) {
        
         if($hasher->check( $request->input('password'),$user->password)) {
  
-         
-        User::where('email', $request->input('email'))
+            User::where('email', $request->input('email'))
                 ->update(['api_token' => $apikey]);
+
+            $roles = $user->getRoleNames();
+            $role = $roles[0];
+
+            $bidder = User::where('email', $request->input('email'))
+                ->join('bidders', 'bidders.id', '=', 'users.id')
+                ->first();
+            
               return
                 response()->json([
                     'status' => 'success',
-                    'email' => $user->email,
+                    'id' => $bidder->id,
+                    'email' => $bidder->email,
+                    'FirstName' => $bidder->first_name,
+                    'LastName' =>  $bidder->last_name,
+                    'role' => $role,
                     'api_token' => $apikey
                   ]);
 

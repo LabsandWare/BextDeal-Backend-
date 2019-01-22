@@ -61,12 +61,12 @@ $app->singleton(
 
 $app->middleware([
     //    App\Http\Middleware\ExampleMiddleware::class
-    App\Http\Middleware\PhpVersionCheck::class
+    App\Http\Middleware\PhpVersionCheck::class,
+    App\Http\Middleware\Cors::class
 ]);
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'cors' => App\Http\Middleware\Cors::class,
     'permission' => Spatie\Permission\Middlewares\PermissionMiddleware::class,
     'role'       => Spatie\Permission\Middlewares\RoleMiddleware::class
 ]);

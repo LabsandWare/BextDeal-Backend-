@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 use App\Product;
 use App\BidOrder;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Filesystem\Filesystem;
-
-
 
 class BidOrderCtrl extends Controller
 {
@@ -15,7 +12,7 @@ class BidOrderCtrl extends Controller
   public function index(Request $request)
   {
       # code...
-      $bid_order = BidOrder::all();
+      $bid_order = BidOrder::with('product')->get();
 
       return $bid_order;
   }

@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 use App\User;
 use App\ProductCategory;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Filesystem\Filesystem;
-
-
 
 class ProductCategoryCtrl extends Controller
 {

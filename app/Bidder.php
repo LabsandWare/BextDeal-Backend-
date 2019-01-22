@@ -24,5 +24,16 @@ class Bidder extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    
+    public function bidcointransactionlog()
+    {
+        return $this->hasOne('App\BidCoinTransactionLog');
+    }
+
+    public function bidderbidregistration()
+    {
+        return $this->hasOne('App\BidderBidRegistration');
+    }
    
 }
